@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 include "template/header-dark.php"; 
 
 // FETCH DATA
@@ -40,7 +40,7 @@ while ($row = $result->fetch_assoc()) {
         display: flex;
         height: 80vh;
         max-width: 1400px;
-        margin: 20px auto 60px; /* Added bottom margin for spacing before newsletter */
+        margin: 20px auto 60px;
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -216,6 +216,14 @@ while ($row = $result->fetch_assoc()) {
     }
     .phone-number:hover { color: #28a745; }
 
+    /* Website link */
+    .website-link {
+        color: #162747;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .website-link:hover { color: #28a745; text-decoration: underline; }
+
     /* Button */
     .btn-map {
         display: inline-flex; align-items: center; gap: 10px;
@@ -324,84 +332,123 @@ while ($row = $result->fetch_assoc()) {
 <script>
     var contacts = <?php echo json_encode($contacts); ?>;
 
+    /* =========================================================
+       SALES OFFICE (TAMARAW) — Master Data
+       All contact info for the main office in one place.
+       Update here if anything changes.
+       ========================================================= */
+    var salesOffice = {
+        address:   '#25 Upper Tamaraw Hills Road, Marulas, Valenzuela City 1440',
+        telephone: '(02) 8726-0529',
+        mobile: [
+            '+63 917 134 3755',
+            '+63 917 100 9436',
+            '+63 917 100 4712'
+        ],
+        email:    'sales@thesentinelautomation.com',
+        website:  'www.thesentinelautomation.com',
+        image:    'assets/siteimgs/TamarawOffice.jpg',
+        mapLink:  'https://www.google.com/maps/place/The+Sentinel+Automation+and+Security+Solutions+Inc./@14.6791716,120.9797571,17z/data=!3m1!4b1!4m6!3m5!1s0x3397b5bafcec6b99:0x5b63af3ca9b98ae8!8m2!3d14.6791664!4d120.982332!16s%2Fg%2F11w1d5xw80?entry=ttu&g_ep=EgoyMDI2MDIxMS4wIKXMDSoASAFQAw%3D%3D'
+    };
+
     function loadContact(index) {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
         document.querySelectorAll('.nav-item')[index].classList.add('active');
 
         var data = contacts[index];
         var isTamaraw = (data.name.toLowerCase().includes('sales office') || data.location.toLowerCase().includes('tamaraw'));
 
-        var imgSrc = isTamaraw ? 'assets/siteimgs/TamarawOffice.jpg' : 'assets/ContactUsPage/office/img.png';
-        var mapLink = isTamaraw ? 'https://maps.app.goo.gl/Phi8jg6ZLZXWJ6x5A' : 'https://maps.google.com/?q=' + encodeURIComponent(data.location);
+        var imgSrc  = isTamaraw ? salesOffice.image : 'assets/ContactUsPage/office/img.png';
+        var mapLink = isTamaraw ? salesOffice.mapLink : 'https://maps.google.com/?q=' + encodeURIComponent(data.location);
 
+        /* ── Contact Numbers ── */
         var phoneHtml = '';
         if (isTamaraw) {
-            phoneHtml = `
-                <div class="value">
-                    <div style="margin-bottom:15px;">
-                        <strong>Telephone:</strong><br> 
-                        <a href="tel:0287260529" class="phone-number">(02) 8726-0529</a>
-                    </div>
-                    <div>
-                        <strong>Mobile:</strong><br>
-                        <a href="tel:+639171343755" class="phone-number">+63 917 134 3755</a>
-                        <a href="tel:+639171009436" class="phone-number">+63 917 100 9436</a>
-                        <a href="tel:+639171004712" class="phone-number">+63 917 100 4712</a>
-                    </div>
-                </div>`;
+            var mobileLinks = '';
+            for (var i = 0; i < salesOffice.mobile.length; i++) {
+                var num = salesOffice.mobile[i];
+                var rawNum = num.replace(/\s/g, '');
+                mobileLinks += '<a href="tel:' + rawNum + '" class="phone-number">' + num + '</a>';
+            }
+            phoneHtml = 
+                '<div class="value">' +
+                    '<div style="margin-bottom:15px;">' +
+                        '<strong>Telephone:</strong><br>' +
+                        '<a href="tel:0287260529" class="phone-number">' + salesOffice.telephone + '</a>' +
+                    '</div>' +
+                    '<div>' +
+                        '<strong>Mobile:</strong><br>' +
+                        mobileLinks +
+                    '</div>' +
+                '</div>';
         } else {
-            phoneHtml = `<div class="value"><a href="tel:${data.contact}" class="phone-number">${data.contact}</a></div>`;
+            phoneHtml = '<div class="value"><a href="tel:' + data.contact + '" class="phone-number">' + data.contact + '</a></div>';
         }
 
-        var html = `
-            <div class="active-content">
-                <div class="img-wrapper" onclick="openLightbox('${imgSrc}')">
-                    <img class="main-img" src="${imgSrc}" onerror="this.src='assets/ContactUsPage/office/img.png'">
-                    <span class="hover-hint">Hover to Zoom / Click to View</span>
-                    <div class="img-popup-hover">
-                        <img src="${imgSrc}" onerror="this.src='assets/ContactUsPage/office/img.png'">
-                    </div>
-                </div>
+        /* ── Email ── */
+        var emailAddr = isTamaraw ? salesOffice.email : data.email;
 
-                <div class="detail-title">
-                    <h1>${data.name}</h1>
-                </div>
+        /* ── Address ── */
+        var addressText = isTamaraw ? salesOffice.address : data.location;
 
-                <div class="info-grid">
-                    <div class="col-1">
-                        <div class="info-box">
-                            <span class="label">Details</span>
-                            <div class="value" style="white-space: normal;">${data.details}</div>
-                        </div>
-                        <div class="info-box">
-                            <span class="label">Address</span>
-                            <div class="value address-text">${data.location}</div>
-                        </div>
-                        <div class="info-box">
-                            <span class="label">Email</span>
-                            <div class="value"><a href="mailto:${data.email}" class="phone-number">${data.email}</a></div>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="info-box">
-                            <span class="label">Contact Numbers</span>
-                            ${phoneHtml}
-                        </div>
-                        <div class="info-box">
-                            <span class="label">Social Media</span>
-                            <div class="value" style="display:flex; gap:15px; font-size:20px;">
-                                ${data.fblink ? `<a href="${data.fblink}" target="_blank"><i class="fab fa-facebook-f"></i></a>` : ''}
-                                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        /* ── Website row (only for Sales Office) ── */
+        var websiteHtml = '';
+        if (isTamaraw) {
+            websiteHtml = 
+                '<div class="info-box">' +
+                    '<span class="label">Website</span>' +
+                    '<div class="value">' +
+                        '<a href="https://' + salesOffice.website + '" target="_blank" class="website-link">' + salesOffice.website + '</a>' +
+                    '</div>' +
+                '</div>';
+        }
 
-                <a href="${mapLink}" target="_blank" class="btn-map">
-                    View on Maps <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        `;
+        /* ── Build Full HTML ── */
+        var html = 
+            '<div class="active-content">' +
+                '<div class="img-wrapper" onclick="openLightbox(\'' + imgSrc + '\')">' +
+                    '<img class="main-img" src="' + imgSrc + '" onerror="this.src=\'assets/ContactUsPage/office/img.png\'">' +
+                    '<span class="hover-hint">Hover to Zoom / Click to View</span>' +
+                    '<div class="img-popup-hover">' +
+                        '<img src="' + imgSrc + '" onerror="this.src=\'assets/ContactUsPage/office/img.png\'">' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="detail-title">' +
+                    '<h1>' + data.name + '</h1>' +
+                '</div>' +
+
+                '<div class="info-grid">' +
+                    '<div class="col-1">' +
+                        '<div class="info-box">' +
+                            '<span class="label">Office Address</span>' +
+                            '<div class="value address-text">' + addressText + '</div>' +
+                        '</div>' +
+                        '<div class="info-box">' +
+                            '<span class="label">Email</span>' +
+                            '<div class="value"><a href="mailto:' + emailAddr + '" class="phone-number">' + emailAddr + '</a></div>' +
+                        '</div>' +
+                        websiteHtml +
+                    '</div>' +
+                    '<div class="col-2">' +
+                        '<div class="info-box">' +
+                            '<span class="label">Contact Numbers</span>' +
+                            phoneHtml +
+                        '</div>' +
+                        '<div class="info-box">' +
+                            '<span class="label">Social Media</span>' +
+                            '<div class="value" style="display:flex; gap:15px; font-size:20px;">' +
+                                (data.fblink ? '<a href="' + data.fblink + '" target="_blank"><i class="fab fa-facebook-f"></i></a>' : '') +
+                                '<a href="#" target="_blank"><i class="fab fa-youtube"></i></a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<a href="' + mapLink + '" target="_blank" class="btn-map">' +
+                    'View on Google Maps <i class="fas fa-arrow-right"></i>' +
+                '</a>' +
+            '</div>';
 
         document.getElementById('contentArea').innerHTML = html;
     }
@@ -415,14 +462,14 @@ while ($row = $result->fetch_assoc()) {
         if(contacts.length > 0) loadContact(0);
 
         // Burger Fix
-        const menuBtns = document.querySelectorAll('.menu-btn, .navbar-toggler');
-        const menuContainer = document.querySelector('.menu-hldr');
-        const closeBtn = document.querySelector('.menu-close');
+        var menuBtns = document.querySelectorAll('.menu-btn, .navbar-toggler');
+        var menuContainer = document.querySelector('.menu-hldr');
+        var closeBtn = document.querySelector('.menu-close');
 
         if(menuContainer) {
-            const openMenu = (e) => { e.preventDefault(); menuContainer.style.display = 'block'; menuContainer.style.opacity = '1'; menuContainer.style.visibility = 'visible'; if(typeof $ !== 'undefined') $('.menu-hldr').fadeIn(); };
-            const closeMenu = () => { if(typeof $ !== 'undefined') { $('.menu-hldr').fadeOut(); } else { menuContainer.style.display = 'none'; } };
-            menuBtns.forEach(btn => btn.addEventListener('click', openMenu));
+            var openMenu = function(e) { e.preventDefault(); menuContainer.style.display = 'block'; menuContainer.style.opacity = '1'; menuContainer.style.visibility = 'visible'; if(typeof $ !== 'undefined') $('.menu-hldr').fadeIn(); };
+            var closeMenu = function() { if(typeof $ !== 'undefined') { $('.menu-hldr').fadeOut(); } else { menuContainer.style.display = 'none'; } };
+            menuBtns.forEach(function(btn) { btn.addEventListener('click', openMenu); });
             if(closeBtn) closeBtn.addEventListener('click', closeMenu);
         }
     });
