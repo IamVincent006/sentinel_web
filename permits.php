@@ -143,7 +143,7 @@
         z-index: 10001;
         width: 50px;
         height: 50px;
-        display: none;
+        display: none;          /* Hidden by default, shown when multi-page */
         align-items: center;
         justify-content: center;
         border-radius: 50%;
@@ -177,7 +177,7 @@
         padding: 6px 18px;
         border-radius: 20px;
         z-index: 10001;
-        display: none;
+        display: none;          /* Hidden for single-page docs */
         letter-spacing: 0.5px;
     }
 
@@ -502,8 +502,8 @@
     var hintTimer = null;
 
     // ── Page State ──
-    var currentPages = [];
-    var currentPageIndex = 0;
+    var currentPages = [];      // Array of image URLs for current document
+    var currentPageIndex = 0;   // Which page we're on (0-based)
 
     // ── Helpers ──
     function isTouchDevice() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0; }
@@ -550,6 +550,7 @@
         var total = currentPages.length;
         var isMulti = total > 1;
 
+        // Show/hide page indicator
         if (isMulti) {
             pageIndEl.textContent = 'Page ' + (currentPageIndex + 1) + ' / ' + total;
             pageIndEl.classList.add('visible');
@@ -557,6 +558,7 @@
             pageIndEl.classList.remove('visible');
         }
 
+        // Show/hide prev/next arrows
         if (isMulti && currentPageIndex > 0) {
             prevBtn.classList.add('visible');
         } else {
@@ -602,7 +604,7 @@
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
 
-        loadPage(0);
+        loadPage(0);    // Always start on page 1
         showHint();
     };
 
@@ -621,11 +623,11 @@
 
     // ── Instruction Hint ──
     function showHint() {
-        var multiNote = currentPages.length > 1 ? '  \u2022  Use \u2039 \u203A to flip pages' : '';
+        var multiNote = currentPages.length > 1 ? '  •  Use ‹ › to flip pages' : '';
         if (isTouchDevice()) {
-            hint.textContent = 'Pinch to Zoom  \u2022  Drag to Pan  \u2022  Double-tap to Toggle' + multiNote;
+            hint.textContent = 'Pinch to Zoom  •  Drag to Pan  •  Double-tap to Toggle' + multiNote;
         } else {
-            hint.textContent = 'Scroll to Zoom  \u2022  Drag to Pan  \u2022  Use +/\u2212 Buttons' + multiNote;
+            hint.textContent = 'Scroll to Zoom  •  Drag to Pan  •  Use +/\u2212 Buttons' + multiNote;
         }
         hint.classList.remove('fade-out');
         if (hintTimer) clearTimeout(hintTimer);
@@ -634,14 +636,18 @@
         }, HINT_DURATION);
     }
 
-    /* DESKTOP — Mouse Wheel Zoom */
+    /* ─────────────────────────────────────────────
+       DESKTOP — Mouse Wheel Zoom
+       ───────────────────────────────────────────── */
     wrapper.addEventListener('wheel', function (e) {
         e.preventDefault();
         var direction = e.deltaY < 0 ? 1 : -1;
         applyZoom(scale * (1 + ZOOM_STEP * direction * 0.5), e.clientX, e.clientY);
     }, { passive: false });
 
-    /* DESKTOP — Mouse Drag to Pan */
+    /* ─────────────────────────────────────────────
+       DESKTOP — Mouse Drag to Pan
+       ───────────────────────────────────────────── */
     img.addEventListener('mousedown', function (e) {
         if (scale <= MIN_SCALE) return;
         e.preventDefault();
@@ -667,7 +673,9 @@
     wrapper.addEventListener('mouseup',    endMousePan);
     wrapper.addEventListener('mouseleave', endMousePan);
 
-    /* MOBILE — Touch: Pinch + Pan + Double-Tap */
+    /* ─────────────────────────────────────────────
+       MOBILE — Touch: Pinch + Pan + Double-Tap
+       ───────────────────────────────────────────── */
     wrapper.addEventListener('touchstart', function (e) {
         if (e.touches.length === 2) {
             e.preventDefault();
@@ -728,7 +736,9 @@
         else { applyZoom(DBL_TAP_SCALE, cx, cy); }
     }
 
-    /* KEYBOARD — Escape, Left/Right arrows */
+    /* ─────────────────────────────────────────────
+       KEYBOARD — Escape, Left/Right arrows
+       ───────────────────────────────────────────── */
     document.addEventListener('keydown', function (e) {
         if (modal.style.display !== 'block') return;
 
@@ -753,7 +763,9 @@
 
 })();
 
-/* BURGER MENU FIX */
+/* =========================================
+   BURGER MENU FIX (unchanged)
+   ========================================= */
 $(document).ready(function() {
     $(".menu-button__hldr, .menu-btn").off('click').on('click', function(e) {
         e.preventDefault();
