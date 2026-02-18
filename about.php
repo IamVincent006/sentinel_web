@@ -311,7 +311,7 @@ $totalTimeline = count($timelineData);
 
 /* ─────────────────────────────────────────────────────
    4. TAB 2: HORIZONTAL SLIDER TIMELINE
-   ────────────────────────────────────────────────���──── */
+   ───────────────────────────────────────────────────── */
 .timeline-section {
     padding: 70px 0 60px;
     background: #fff;
@@ -488,14 +488,42 @@ $totalTimeline = count($timelineData);
     background-position: center;
     position: relative;
     flex-shrink: 0;
+    cursor: pointer; /* Added for Lightbox */
+    transition: opacity 0.3s ease;
+}
+
+/* Added for Lightbox: Hover overlay icon */
+.tl-card-img::before {
+    content: '\f00e'; /* FontAwesome search-plus icon */
+    font-family: 'Font Awesome 5 Free'; 
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    color: white;
+    font-size: 32px;
+    opacity: 0;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.tl-card-img:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .tl-card-img::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 40%;
-    background: linear-gradient(to top, rgba(0,0,0,0.12), transparent);
+    height: 100%; /* Changed from 40% to cover the whole image on hover for better contrast */
+    background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+    transition: background 0.3s ease;
+}
+
+.tl-card-img:hover::after {
+    background: rgba(22, 39, 71, 0.4); /* Subtle blue tint on hover */
 }
 
 .tl-card-body {
@@ -670,96 +698,94 @@ $totalTimeline = count($timelineData);
 /* ─────────────────────────────────────────────────────
    7. RESPONSIVE BREAKPOINTS
    ───────────────────────────────────────────────────── */
-
-/* Tablet — 2 cards per view */
 @media (max-width: 992px) {
-    .tl-slide {
-        flex: 0 0 calc(100% / 2);
-    }
-    .tl-slider-wrapper {
-        padding: 0 60px;
-    }
-    .tl-slider-wrapper .tl-arrow {
-        width: 44px;
-        height: 44px;
-        font-size: 16px;
-    }
+    .tl-slide { flex: 0 0 calc(100% / 2); }
+    .tl-slider-wrapper { padding: 0 60px; }
+    .tl-slider-wrapper .tl-arrow { width: 44px; height: 44px; font-size: 16px; }
     .tl-slider-wrapper .tl-arrow.tl-prev { left: 5px; }
     .tl-slider-wrapper .tl-arrow.tl-next { right: 5px; }
-    .tl-slider-line {
-        left: 60px;
-        right: 60px;
-    }
-    .overview-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    .tech-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    .about-tabs-nav .nav-tabs .nav-link {
-        padding: 16px 18px;
-        font-size: 11px;
-        letter-spacing: 0.8px;
-    }
+    .tl-slider-line { left: 60px; right: 60px; }
+    .overview-grid { grid-template-columns: 1fr; gap: 24px; }
+    .tech-grid { grid-template-columns: 1fr; gap: 20px; }
+    .about-tabs-nav .nav-tabs .nav-link { padding: 16px 18px; font-size: 11px; letter-spacing: 0.8px; }
     .overview-card { padding: 35px 30px; }
     .overview-who .who-card { padding: 35px 30px; }
 }
 
-/* Mobile — 1 card per view */
 @media (max-width: 576px) {
-    .tl-slide {
-        flex: 0 0 100%;
-    }
-    .tl-slider-wrapper {
-        padding: 0 50px;
-    }
-    .tl-slider-wrapper .tl-arrow {
-        width: 38px;
-        height: 38px;
-        font-size: 14px;
-    }
+    .tl-slide { flex: 0 0 100%; }
+    .tl-slider-wrapper { padding: 0 50px; }
+    .tl-slider-wrapper .tl-arrow { width: 38px; height: 38px; font-size: 14px; }
     .tl-slider-wrapper .tl-arrow.tl-prev { left: 3px; }
     .tl-slider-wrapper .tl-arrow.tl-next { right: 3px; }
-    .tl-slider-line {
-        display: none;
-    }
-    .tl-slide-inner .tl-year {
-        width: 62px;
-        height: 62px;
-        font-size: 14px;
-    }
-    .tl-card-img {
-        height: 160px;
-    }
-    .about-tabs-nav .nav-tabs .nav-link {
-        padding: 14px 12px;
-        font-size: 10px;
-        letter-spacing: 0.5px;
-    }
-    .about-tabs-nav .nav-tabs .nav-link i {
-        display: none;
-    }
-    .overview-card {
-        padding: 30px 24px;
-    }
-    .overview-card h3 {
-        font-size: 22px;
-    }
-    .tech-card {
-        padding: 30px 24px;
-    }
-    .timeline-section {
-        padding: 50px 0 50px;
-    }
+    .tl-slider-line { display: none; }
+    .tl-slide-inner .tl-year { width: 62px; height: 62px; font-size: 14px; }
+    .tl-card-img { height: 160px; }
+    .about-tabs-nav .nav-tabs .nav-link { padding: 14px 12px; font-size: 10px; letter-spacing: 0.5px; }
+    .about-tabs-nav .nav-tabs .nav-link i { display: none; }
+    .overview-card { padding: 30px 24px; }
+    .overview-card h3 { font-size: 22px; }
+    .tech-card { padding: 30px 24px; }
+    .timeline-section { padding: 50px 0 50px; }
+}
+
+/* ─────────────────────────────────────────────────────
+   8. IMAGE MODAL (LIGHTBOX) STYLES
+   ───────────────────────────────────────────────────── */
+.custom-modal {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 18, 35, 0.9); /* Dark background matching theme */
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.custom-modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.custom-modal-content {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.custom-modal.show .custom-modal-content {
+    transform: scale(1);
+}
+
+.custom-modal-close {
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    color: #fff;
+    font-size: 45px;
+    font-weight: 300;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.custom-modal-close:hover {
+    color: #d8dde5;
+    transform: scale(1.1);
 }
 </style>
 
 
-<!-- ╔═══════════════════════════════════════════╗
-     ║  SECTION 1: HERO                         ║
-     ╚═══════════════════════════════════════════╝ -->
 <section class="abt-frame1">
     <div class="frm-cntnr">
         <div class="abt-frame1__img-hldr" style="background-image: url('assets/cover-photo-no-text.png');">
@@ -788,9 +814,6 @@ $totalTimeline = count($timelineData);
 </section>
 
 
-<!-- ╔═══════════════════════════════════���═══════╗
-     ║  STICKY TAB NAVIGATION                   ║
-     ╚═══════════════════════════════════════════╝ -->
 <div class="about-tabs-nav">
     <ul class="nav nav-tabs" id="aboutTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -812,12 +835,8 @@ $totalTimeline = count($timelineData);
 </div>
 
 
-<!-- ╔═══════════════════════════════════════════╗
-     ║  TAB CONTENT                              ║
-     ╚═══════════════════════════════════════════╝ -->
 <div class="tab-content about-tab-content" id="aboutTabsContent">
 
-    <!-- ─── TAB 1: OVERVIEW ─── -->
     <div class="tab-pane fade show active" id="overview-panel" role="tabpanel">
         <div class="overview-section">
             <div class="overview-grid">
@@ -848,7 +867,6 @@ $totalTimeline = count($timelineData);
         </div>
     </div>
 
-    <!-- ─── TAB 2: TIMELINE (SLIDER WITH DRAG) ─── -->
     <div class="tab-pane fade" id="timeline-panel" role="tabpanel">
         <div class="timeline-section">
             <div class="section-header">
@@ -857,15 +875,12 @@ $totalTimeline = count($timelineData);
             </div>
 
             <div class="tl-slider-wrapper" id="tlSlider">
-                <!-- Left Arrow -->
                 <button class="tl-arrow tl-prev" id="tlPrev" aria-label="Previous" disabled>
                     <i class="fas fa-chevron-left"></i>
                 </button>
 
-                <!-- Horizontal line behind year circles -->
                 <div class="tl-slider-line"></div>
 
-                <!-- Viewport (overflow mask) -->
                 <div class="tl-slider-viewport" id="tlViewport">
                     <div class="tl-slider-rail" id="tlRail">
                         <?php foreach ($timelineData as $idx => $tl) { ?>
@@ -875,7 +890,7 @@ $totalTimeline = count($timelineData);
                                     <div class="tl-connector"></div>
                                     <div class="tl-card">
                                         <?php if (!empty($tl['image'])) { ?>
-                                            <div class="tl-card-img" style="background-image: url(<?= $tl['image'] ?>);"></div>
+                                            <div class="tl-card-img" style="background-image: url('<?= $tl['image'] ?>');" data-img-url="<?= $tl['image'] ?>"></div>
                                         <?php } ?>
                                         <div class="tl-card-body">
                                             <p><?= $tl['details'] ?></p>
@@ -887,16 +902,13 @@ $totalTimeline = count($timelineData);
                     </div>
                 </div>
 
-                <!-- Right Arrow -->
                 <button class="tl-arrow tl-next" id="tlNext" aria-label="Next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
 
-            <!-- Dot indicators -->
             <div class="tl-dots" id="tlDots"></div>
 
-            <!-- Counter -->
             <div class="tl-counter">
                 <span class="tl-counter-current" id="tlCurrent">1</span>
                 <span> / </span>
@@ -905,7 +917,6 @@ $totalTimeline = count($timelineData);
         </div>
     </div>
 
-    <!-- ─── TAB 3: TECHNICAL STRUCTURE ─── -->
     <div class="tab-pane fade" id="techstructure-panel" role="tabpanel">
         <div class="techstructure-section">
             <div class="section-header">
@@ -947,21 +958,21 @@ $totalTimeline = count($timelineData);
 
 </div>
 
+<div id="imageModal" class="custom-modal">
+    <span class="custom-modal-close">&times;</span>
+    <img class="custom-modal-content" id="fullImage">
+</div>
 
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     JAVASCRIPT
-     ═══════════════════════════════════════════════════════ -->
 <script type="text/javascript">
     var pageID = 'AboutPage',
     baseHref = 'localhost',
     themeDir = '/_resources/themes/main';
 
-
     /* ════════════════════════════════════════════════════
        TIMELINE SLIDER — Transform + Drag + Swipe
-       ═══════════════════��════════════════════════════════ */
+       ════════════════════════════════════════════════════ */
     (function() {
         var rail      = document.getElementById('tlRail');
         var viewport  = document.getElementById('tlViewport');
@@ -1294,6 +1305,55 @@ $totalTimeline = count($timelineData);
                     });
                 }
             });
+        });
+    })();
+
+    /* ════════════════════════════════════════════════════
+       IMAGE LIGHTBOX MODAL (NEW)
+       ════════════════════════════════════════════════════ */
+    (function() {
+        var modal = document.getElementById("imageModal");
+        var modalImg = document.getElementById("fullImage");
+        var closeBtn = document.querySelector(".custom-modal-close");
+        var images = document.querySelectorAll(".tl-card-img");
+
+        // Open modal on image click
+        images.forEach(function(img) {
+            img.addEventListener("click", function() {
+                var imageUrl = this.getAttribute("data-img-url");
+                if(imageUrl) {
+                    modalImg.src = imageUrl;
+                    modal.classList.add("show");
+                }
+            });
+        });
+
+        // Function to close modal
+        function closeModal() {
+            modal.classList.remove("show");
+            // Clear the src after the animation finishes
+            setTimeout(function() {
+                if(!modal.classList.contains("show")) modalImg.src = "";
+            }, 300);
+        }
+
+        // Close when clicking the "X"
+        if(closeBtn) {
+            closeBtn.addEventListener("click", closeModal);
+        }
+
+        // Close when clicking anywhere on the dark background
+        modal.addEventListener("click", function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close when pressing the "Escape" key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape" && modal.classList.contains("show")) {
+                closeModal();
+            }
         });
     })();
 </script>
